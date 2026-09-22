@@ -1,6 +1,11 @@
 # SQL Server Monitoring Platform
 
 Production-oriented local stack for monitoring Microsoft SQL Server with PostgreSQL as the monitoring repository, Python Collector, Apache Airflow orchestration, FastAPI API and Grafana dashboards.
+# SQL Server Monitoring Platform First Page
+<img width="1241" height="881" alt="SQLServerMonitoringPlatform" src="https://github.com/user-attachments/assets/c210f0c1-4408-4887-ab11-b13632b695ca" />
+
+# SQL Server Monitoring Dashboard
+<img width="1918" height="1079" alt="GrafanaDashboard" src="https://github.com/user-attachments/assets/269a2896-0778-444f-9c0f-d7ad1efb112f" />
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
 ## Quick Start

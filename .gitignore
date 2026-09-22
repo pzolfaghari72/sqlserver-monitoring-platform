@@ -1,31 +1,20 @@
-# Secrets
 .env
-*.key
-*.pem
-*.pfx
-*.p12
-
-# Python
+.env.*
+!.env.example
 __pycache__/
 *.py[cod]
-*.pyo
-*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 .venv/
 venv/
-.envrc
-
-# Airflow local files
-airflow.db
-airflow-webserver.pid
-logs/
-plugins/
-airflow_metadata/
-
-# Docker / runtime
+airflow/logs/*
+!airflow/logs/.gitkeep
 *.log
-*.tmp
-
-# OS / IDE
+backups/
+*.sql.gz
+frontend/config.local.js
+frontend/config.runtime.js
 .DS_Store
-.vscode/
-.idea/

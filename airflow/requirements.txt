@@ -1,0 +1,2 @@
+apache-airflow-providers-postgres>=5.12,<7
+croniter>=2.0,<7

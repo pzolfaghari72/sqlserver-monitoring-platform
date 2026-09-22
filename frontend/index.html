@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SQL Server Monitoring</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Operations console</p>
+        <h1>SQL Server Monitoring</h1>
+      </div>
+      <a class="button grafana-button" href="http://localhost:3000/d/sqlserver-platform/sql-server-monitoring-platform" target="_blank" rel="noreferrer">Open Grafana</a>
+    </header>
+    <section class="metrics" aria-label="Platform status">
+      <article><span>API</span><strong id="api-status">Checking</strong></article>
+      <article><span>Database</span><strong id="database-status">Checking</strong></article>
+      <article><span>Active alerts</span><strong id="alert-count">-</strong></article>
+      <article><span>Critical alerts</span><strong id="critical-count">-</strong></article>
+      <article><span>Warnings</span><strong id="warning-count">-</strong></article>
+    </section>
+    <section class="panel">
+      <div class="panel-heading"><h2>Active alerts</h2><button id="refresh" class="button secondary">Refresh</button></div>
+      <p id="empty-state" class="muted">Loading alerts...</p>
+      <div class="table-wrap"><table><thead><tr><th>Severity</th><th>Alert</th><th>Target</th><th>Metric</th><th>Value / threshold</th><th>Occurrences</th><th>Last seen</th><th>Action</th></tr></thead><tbody id="alerts"></tbody></table></div>
+    </section>
+  </main>
+  <script src="/config.js"></script>
+  <script src="/config.runtime.js"></script>
+  <script src="/app.js" defer></script>
+</body>
+</html>

@@ -26,3 +26,8 @@ CREATE TABLE IF NOT EXISTS dimension.dim_instance (
 CREATE INDEX IF NOT EXISTS ix_dim_instance_server ON dimension.dim_instance(server_key);
 CREATE INDEX IF NOT EXISTS ix_dim_instance_active ON dimension.dim_instance(is_active);
 COMMENT ON TABLE dimension.dim_instance IS 'SQL Server instance dimension.';
+
+DROP TRIGGER IF EXISTS trg_dim_instance_updated_at ON dimension.dim_instance;
+CREATE TRIGGER trg_dim_instance_updated_at
+BEFORE UPDATE ON dimension.dim_instance
+FOR EACH ROW EXECUTE FUNCTION config.trg_set_updated_at();

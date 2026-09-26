@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS monitoring.collection_run (
     metrics_requested INTEGER DEFAULT 0,
     metrics_collected INTEGER DEFAULT 0,
     records_collected BIGINT DEFAULT 0,
+    alerts_processed_at TIMESTAMPTZ,
     error_count INTEGER NOT NULL DEFAULT 0,
     duration_seconds DOUBLE PRECISION,
     execution_id UUID,

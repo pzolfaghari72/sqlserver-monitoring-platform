@@ -18,10 +18,24 @@ CREATE TABLE IF NOT EXISTS fact.fact_server_metric (
     metric_value_text TEXT,
     status VARCHAR(20) NOT NULL DEFAULT 'success',
     collection_run_key BIGINT REFERENCES monitoring.collection_run(collection_run_key),
+    
     CONSTRAINT ck_fact_server_metric_status CHECK(status IN ('success','warning','error')),
     CONSTRAINT ck_fact_server_metric_value CHECK(metric_value_numeric IS NOT NULL OR metric_value_text IS NOT NULL),
-    CONSTRAINT uq_fact_server_metric_observation UNIQUE(instance_key,metric_key,collected_at,collection_run_key)
+    CONSTRAINT uq_fact_server_metric_observation UNIQUE(instance_key, metric_key, collected_at, collection_run_key)
 );
-CREATE INDEX IF NOT EXISTS ix_fact_server_metric_instance_time ON fact.fact_server_metric(instance_key,collected_at DESC);
-CREATE INDEX IF NOT EXISTS ix_fact_server_metric_metric_time ON fact.fact_server_metric(metric_key,collected_at DESC);
-CREATE INDEX IF NOT EXISTS ix_fact_server_metric_run ON fact.fact_server_metric(collection_run_key);
+
+CREATE INDEX IF NOT EXISTS ix_fact_server_metric_chart_lookup 
+ON fact.fact_server_metric(instance_key, metric_key, collected_at DESC)
+INCLUDE (metric_value_numeric);
+
+CREATE INDEX IF NOT EXISTS ix_fact_server_metric_metric_time 
+ON fact.fact_server_metric(metric_key, collected_at DESC)
+INCLUDE (instance_key, metric_value_numeric);
+
+CREATE INDEX IF NOT EXISTS ix_fact_server_metric_date 
+ON fact.fact_server_metric(date_key);
+
+CREATE INDEX IF NOT EXISTS ix_fact_server_metric_run 
+ON fact.fact_server_metric(collection_run_key);
+
+COMMENT ON TABLE fact.fact_server_metric IS 'Historical server and instance time-series metric observations.';

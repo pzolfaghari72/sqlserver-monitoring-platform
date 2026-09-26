@@ -23,11 +23,25 @@ CREATE TABLE IF NOT EXISTS fact.fact_deadlock (
     victim_host_name VARCHAR(256),
     victim_program_name VARCHAR(256),
     victim_sql_text TEXT,
-    deadlock_graph TEXT,
-    deadlock_hash VARCHAR(128),
+    deadlock_graph TEXT, -- در صورت تمایل می‌توان از نوع XML در PostgreSQL استفاده نمود
+    deadlock_hash VARCHAR(128) NOT NULL,
     status VARCHAR(20) NOT NULL DEFAULT 'success',
     collection_run_key BIGINT REFERENCES monitoring.collection_run(collection_run_key),
     CONSTRAINT ck_fact_deadlock_status CHECK(status IN ('success','warning','error')),
-    CONSTRAINT uq_fact_deadlock_hash UNIQUE(instance_key,deadlock_hash)
+    CONSTRAINT uq_fact_deadlock_hash UNIQUE(instance_key, deadlock_hash)
 );
-CREATE INDEX IF NOT EXISTS ix_fact_deadlock_instance_time ON fact.fact_deadlock(instance_key,occurred_at DESC);
+
+CREATE INDEX IF NOT EXISTS ix_fact_deadlock_instance_time 
+ON fact.fact_deadlock(instance_key, occurred_at DESC);
+
+CREATE INDEX IF NOT EXISTS ix_fact_deadlock_database_time 
+ON fact.fact_deadlock(database_key, occurred_at DESC)
+WHERE database_key IS NOT NULL;
+
+CREATE INDEX IF NOT EXISTS ix_fact_deadlock_date 
+ON fact.fact_deadlock(date_key);
+
+CREATE INDEX IF NOT EXISTS ix_fact_deadlock_run 
+ON fact.fact_deadlock(collection_run_key);
+
+COMMENT ON TABLE fact.fact_deadlock IS 'Detected deadlock events and XML graphs.';

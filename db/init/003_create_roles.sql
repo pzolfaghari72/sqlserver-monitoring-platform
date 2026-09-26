@@ -9,4 +9,42 @@ Notes:
 ===============================================================================
 */
 
-SELECT 1;
+-- 1. Create Base Group Roles (No direct login)
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'monitoring_reader_group') THEN
+        CREATE ROLE monitoring_reader_group NOLOGIN;
+    END IF;
+
+    IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'monitoring_collector_group') THEN
+        CREATE ROLE monitoring_collector_group NOLOGIN;
+    END IF;
+
+    IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'monitoring_etl_group') THEN
+        CREATE ROLE monitoring_etl_group NOLOGIN;
+    END IF;
+END
+$$;
+
+-- 2. Create Functional Users (Passwords should be overridden via secrets/env in actual deployment)
+DO $$
+BEGIN
+    -- User for Dashboards / Web Application (Read-Only)
+    IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'app_user') THEN
+        CREATE USER app_user WITH PASSWORD 'app_secure_password_placeholder';
+        GRANT monitoring_reader_group TO app_user;
+    END IF;
+
+    -- User for Collector Engine & Heartbeat Probes
+    IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'collector_user') THEN
+        CREATE USER collector_user WITH PASSWORD 'collector_secure_password_placeholder';
+        GRANT monitoring_collector_group TO collector_user;
+    END IF;
+
+    -- User for Airflow Tasks & SP Orchestration
+    IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'airflow_etl_user') THEN
+        CREATE USER airflow_etl_user WITH PASSWORD 'etl_secure_password_placeholder';
+        GRANT monitoring_etl_group TO airflow_etl_user;
+    END IF;
+END
+$$;

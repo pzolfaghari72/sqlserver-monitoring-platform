@@ -21,5 +21,16 @@ CREATE TABLE IF NOT EXISTS staging.database_metric (
     loaded_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT ck_staging_database_status CHECK(status IN ('success','warning','error')),
     CONSTRAINT ck_staging_database_value CHECK(metric_value_numeric IS NOT NULL OR metric_value_text IS NOT NULL)
+) WITH (
+    fillfactor = 90,
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_cost_limit = 1000
 );
+
+--Index for Joining Facts and load on Run
 CREATE INDEX IF NOT EXISTS ix_staging_database_run ON staging.database_metric(collection_run_key);
+
+-- Key Index for Airflow Data Quality (cleanup_staging_tables)
+CREATE INDEX IF NOT EXISTS ix_staging_database_loaded_at ON staging.database_metric(loaded_at);
+
+COMMENT ON TABLE staging.database_metric IS 'Landing table for database-level metrics before fact processing.';

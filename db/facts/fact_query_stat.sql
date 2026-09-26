@@ -37,7 +37,27 @@ CREATE TABLE IF NOT EXISTS fact.fact_query_stat (
     row_count BIGINT,
     status VARCHAR(20) NOT NULL DEFAULT 'success',
     collection_run_key BIGINT REFERENCES monitoring.collection_run(collection_run_key),
-    CONSTRAINT ck_fact_query_status CHECK(status IN ('success','warning','error'))
+
+    CONSTRAINT ck_fact_query_status CHECK(status IN ('success','warning','error')),
+    
+    CONSTRAINT uq_fact_query_stat_snapshot UNIQUE(instance_key, database_key, query_hash, query_plan_hash, collected_at)
 );
-CREATE INDEX IF NOT EXISTS ix_fact_query_database_time ON fact.fact_query_stat(database_key,collected_at DESC);
-CREATE INDEX IF NOT EXISTS ix_fact_query_hash_time ON fact.fact_query_stat(query_hash,collected_at DESC);
+
+CREATE INDEX IF NOT EXISTS ix_fact_query_hash_time 
+ON fact.fact_query_stat(query_hash, collected_at DESC);
+
+CREATE INDEX IF NOT EXISTS ix_fact_query_cpu_performance 
+ON fact.fact_query_stat(instance_key, database_key, total_cpu_ms DESC)
+WHERE total_cpu_ms IS NOT NULL;
+
+CREATE INDEX IF NOT EXISTS ix_fact_query_io_performance 
+ON fact.fact_query_stat(instance_key, database_key, total_logical_reads DESC)
+WHERE total_logical_reads IS NOT NULL;
+
+CREATE INDEX IF NOT EXISTS ix_fact_query_database_time 
+ON fact.fact_query_stat(database_key, collected_at DESC);
+
+CREATE INDEX IF NOT EXISTS ix_fact_query_run 
+ON fact.fact_query_stat(collection_run_key);
+
+COMMENT ON TABLE fact.fact_query_stat IS 'Historical snapshots of SQL Server execution statistics.';

@@ -31,3 +31,8 @@ CREATE TABLE IF NOT EXISTS dimension.dim_metric (
 );
 CREATE INDEX IF NOT EXISTS ix_dim_metric_category_active ON dimension.dim_metric(category,is_active);
 COMMENT ON TABLE dimension.dim_metric IS 'Canonical monitoring metric catalog.';
+
+DROP TRIGGER IF EXISTS trg_dim_metric_updated_at ON dimension.dim_metric;
+CREATE TRIGGER trg_dim_metric_updated_at
+BEFORE UPDATE ON dimension.dim_metric
+FOR EACH ROW EXECUTE FUNCTION config.trg_set_updated_at();

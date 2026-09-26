@@ -33,7 +33,20 @@ CREATE TABLE IF NOT EXISTS fact.fact_blocking (
     status VARCHAR(20) NOT NULL DEFAULT 'success',
     collection_run_key BIGINT REFERENCES monitoring.collection_run(collection_run_key),
     CONSTRAINT ck_fact_blocking_status CHECK(status IN ('success','warning','error')),
-    CONSTRAINT ck_fact_blocking_session CHECK(blocked_session_id>0)
+    CONSTRAINT ck_fact_blocking_session CHECK(blocked_session_id > 0)
 );
-CREATE INDEX IF NOT EXISTS ix_fact_blocking_instance_time ON fact.fact_blocking(instance_key,collected_at DESC);
-CREATE INDEX IF NOT EXISTS ix_fact_blocking_database_time ON fact.fact_blocking(database_key,collected_at DESC);
+
+CREATE INDEX IF NOT EXISTS ix_fact_blocking_instance_time 
+ON fact.fact_blocking(instance_key, collected_at DESC);
+
+CREATE INDEX IF NOT EXISTS ix_fact_blocking_database_time 
+ON fact.fact_blocking(database_key, collected_at DESC);
+
+CREATE INDEX IF NOT EXISTS ix_fact_blocking_wait_analysis 
+ON fact.fact_blocking(wait_type, blocking_duration_ms DESC)
+WHERE blocking_duration_ms > 1000; 
+
+CREATE INDEX IF NOT EXISTS ix_fact_blocking_process_analysis 
+ON fact.fact_blocking(instance_key, blocking_program_name, collected_at DESC);
+
+COMMENT ON TABLE fact.fact_blocking IS 'Point-in-time blocking snapshots for incident response.';

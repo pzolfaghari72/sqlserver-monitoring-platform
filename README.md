@@ -93,3 +93,56 @@ The platform features a **hybrid dual-path ingestion engine** that balances real
  │    & Frontend Portal      │     │  (Platform Overview &     │
  │ (API Key / JWT Protected) │     │   Analytical Drill-downs) │
  └───────────────────────────┘     └───────────────────────────┘
+
+
+A production-ready, distributed telemetry, diagnostic, and monitoring platform designed for deep observability and performance tuning of **Microsoft SQL Server (2019/2022)**.
+
+The platform combines a modular **Python Collector**, a **PostgreSQL Dimensional Repository (Star Schema)**, automated ETL & alert orchestration via **Apache Airflow**, a secure **FastAPI** telemetry API, an administrative frontend, and unified operational dashboards in **Grafana**.
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+## Architecture & Data Flow
+
+The platform features a **hybrid dual-path ingestion engine** that balances real-time diagnostic needs against historical trend aggregation:
+```text
+ ┌─────────────────────────────────────────────────────────────┐
+ │                Target Microsoft SQL Server                  │
+ │      (DMVs, Extended Events, Wait Stats, PerfMon, Agent)    │
+ └──────────────────────────────┬──────────────────────────────┘
+                                │
+                                ▼
+ ┌─────────────────────────────────────────────────────────────┐
+ │                 Python Telemetry Collector                  │
+ │    (ODBC Driver 18, Modular Domain Engine, Async Pipeline)  │
+ └──────────────┬───────────────────────────────┬──────────────┘
+   (Direct Operational Facts)            (Raw/Generic Metrics)
+                │                               │ 
+                ▼                               ▼
+ ┌───────────────────────────┐    ┌────────────────────────────┐
+ │    Domain Fact Tables     │    │   Ingestion Staging Area   │
+ │ • fact_wait_stat          │    │ • staging.server_metric    │
+ │ • fact_blocking           │    │ • staging.database_metric  │
+ │ • fact_query_stat         │    └─────────────┬──────────────┘
+ │ • fact_backup             │                  │
+ │ • fact_deadlock           │                  │
+ │ • fact_sqlagent_job       │                  │
+ │  (sp_load_*_metrics & DQ) │                  │
+ └─────────────┬─────────────┘                  │
+               │                 ┌────────────────────────────┐
+               │                 │  Airflow ELT Orchestration │
+               │                 └──────────────┬─────────────┘                  
+               │                                │           
+               └────────────────┬───────────────┘
+                                │
+                                ▼
+ ┌─────────────────────────────────────────────────────────────┐
+ │          PostgreSQL Monitoring Analytical Repository        │
+ │       (Dimensional Model: dim_server, dim_db, Views)        │
+ └──────────────────────────────┬──────────────────────────────┘
+                                │
+               ┌────────────────┴────────────────┐
+               ▼                                 ▼
+ ┌───────────────────────────┐     ┌───────────────────────────┐
+ │   FastAPI Telemetry API   │     │    Grafana Dashboards     │
+ │    & Frontend Portal      │     │  (Platform Overview &     │
+ │ (API Key / JWT Protected) │     │   Analytical Drill-downs) │
+ └───────────────────────────┘     └───────────────────────────┘

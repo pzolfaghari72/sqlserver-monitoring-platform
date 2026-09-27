@@ -8,13 +8,6 @@ Grain:
 ===============================================================================
 */
 
-CREATE OR REPLACE FUNCTION config.trg_set_updated_at()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
 
 CREATE TABLE IF NOT EXISTS dimension.dim_server (
     server_key BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -33,7 +26,7 @@ CREATE TABLE IF NOT EXISTS dimension.dim_server (
 CREATE INDEX IF NOT EXISTS ix_dim_server_environment ON dimension.dim_server(environment);
 CREATE INDEX IF NOT EXISTS ix_dim_server_active ON dimension.dim_server(is_active);
 COMMENT ON TABLE dimension.dim_server IS 'SQL Server host dimension.';
-
+ 
 DROP TRIGGER IF EXISTS trg_dim_server_updated_at ON dimension.dim_server;
 CREATE TRIGGER trg_dim_server_updated_at
 BEFORE UPDATE ON dimension.dim_server

@@ -43,8 +43,8 @@ BEGIN
 
     -- User for Airflow Tasks & SP Orchestration
     IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'etl_user') THEN
-        CREATE USER airflow_etl_user WITH PASSWORD 'etl@123456';
-        GRANT monitoring_etl_group TO airflow_etl_user;
+        CREATE USER etl_user WITH PASSWORD 'etl@123456';
+        GRANT monitoring_etl_group TO etl_user;
     END IF;
 END
 $$;

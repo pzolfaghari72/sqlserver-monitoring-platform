@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS fact.fact_sqlagent_job (
     CONSTRAINT ck_fact_agent_run_status CHECK(run_status IN ('SUCCESS','FAILED','RETRY','CANCELED','UNKNOWN','IN_PROGRESS')),
     CONSTRAINT ck_fact_agent_step_status CHECK(step_status IS NULL OR step_status IN ('SUCCESS','FAILED','RETRY','CANCELED','UNKNOWN')),
     CONSTRAINT ck_fact_agent_step_id CHECK(step_id >= 0),
-    CONSTRAINT ck_fact_agent_duration CHECK(duration_seconds IS NULL OR duration_seconds >= 0),
+    CONSTRAINT ck_fact_agent_duration CHECK(run_duration_seconds IS NULL OR run_duration_seconds >= 0),
     
     CONSTRAINT uq_fact_sqlagent_job_history UNIQUE(instance_key, run_id)
 );

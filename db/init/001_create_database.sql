@@ -9,4 +9,5 @@ Notes:
 ===============================================================================
 */
 
-SELECT current_database() AS initialized_database;
+SELECT 'CREATE DATABASE sqlserver_monitoring'
+WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'sqlserver_monitoring')\gexec

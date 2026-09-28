@@ -532,7 +532,7 @@ class PostgresRepository:
                         run_id,
                         run_start_at,
                         run_finish_at,
-                        duration_seconds,
+                        run_duration_seconds,
                         run_status,
                         message,
                         sqlagent_job_enabled,

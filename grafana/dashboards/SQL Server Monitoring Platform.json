@@ -1216,8 +1216,85 @@
     "monitoring",
     "platform"
   ],
+
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "0"
+        },
+        "datasource": {
+          "type": "grafana-postgresql-datasource",
+          "uid": "${DS_POSTGRES}"
+        },
+        "definition": "-- Grafana query variable: instance_key (multi-value; custom All value = 0)\nSELECT i.instance_name AS \"__text\", i.instance_key AS \"__value\"\nFROM dimension.dim_instance AS i\nWHERE i.is_active\nORDER BY i.instance_name;",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Instance",
+        "multi": true,
+        "name": "instance_key",
+        "options": [],
+        "query": "-- Grafana query variable: instance_key (multi-value; custom All value = 0)\nSELECT i.instance_name AS \"__text\", i.instance_key AS \"__value\"\nFROM dimension.dim_instance AS i\nWHERE i.is_active\nORDER BY i.instance_name;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query",
+        "allValue": "0"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "0"
+        },
+        "datasource": {
+          "type": "grafana-postgresql-datasource",
+          "uid": "${DS_POSTGRES}"
+        },
+        "definition": "-- Grafana query variable: database_key (multi-value; custom All value = 0)\n-- Depends on the instance_key variable.\nSELECT d.database_name || ' (' || i.instance_name || ')' AS \"__text\", d.database_key AS \"__value\"\nFROM dimension.dim_database AS d\nJOIN dimension.dim_instance AS i ON i.instance_key = d.instance_key\nWHERE d.is_active\n  AND i.is_active\n  AND (0 IN (${instance_key:csv}) OR d.instance_key IN (${instance_key:csv}))\nORDER BY i.instance_name, d.database_name;",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Database",
+        "multi": true,
+        "name": "database_key",
+        "options": [],
+        "query": "-- Grafana query variable: database_key (multi-value; custom All value = 0)\n-- Depends on the instance_key variable.\nSELECT d.database_name || ' (' || i.instance_name || ')' AS \"__text\", d.database_key AS \"__value\"\nFROM dimension.dim_database AS d\nJOIN dimension.dim_instance AS i ON i.instance_key = d.instance_key\nWHERE d.is_active\n  AND i.is_active\n  AND (0 IN (${instance_key:csv}) OR d.instance_key IN (${instance_key:csv}))\nORDER BY i.instance_name, d.database_name;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query",
+        "allValue": "0"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "ALL"
+        },
+        "datasource": {
+          "type": "grafana-postgresql-datasource",
+          "uid": "${DS_POSTGRES}"
+        },
+        "definition": "-- Grafana query variable: metric_code (multi-value; custom All value = ALL)\nSELECT m.metric_name || ' [' || m.metric_code || ']' AS \"__text\", m.metric_code AS \"__value\"\nFROM dimension.dim_metric AS m\nWHERE m.is_active\nORDER BY m.category, m.metric_name;",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Metric",
+        "multi": true,
+        "name": "metric_code",
+        "options": [],
+        "query": "-- Grafana query variable: metric_code (multi-value; custom All value = ALL)\nSELECT m.metric_name || ' [' || m.metric_code || ']' AS \"__text\", m.metric_code AS \"__value\"\nFROM dimension.dim_metric AS m\nWHERE m.is_active\nORDER BY m.category, m.metric_name;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query",
+        "allValue": "ALL"
+      }
+    ]
   },
   "time": {
     "from": "now-30m",

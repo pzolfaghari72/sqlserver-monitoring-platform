@@ -32,8 +32,9 @@ INTEGRITY_CHECKS: List[Dict[str, str]] = [
         "query": """
             SELECT COUNT(*)
             FROM fact.fact_database_metric f
-            LEFT JOIN dimension.dim_instance i ON i.instance_key = f.instance_key
-            WHERE i.instance_key IS NULL;
+            LEFT JOIN dimension.dim_database d ON d.database_key = f.database_key
+            LEFT JOIN dimension.dim_instance i ON i.instance_key = d.instance_key
+            WHERE d.database_key IS NULL OR i.instance_key IS NULL;
         """,
     },
     {

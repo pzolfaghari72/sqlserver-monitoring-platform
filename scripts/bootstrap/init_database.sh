@@ -15,6 +15,16 @@ set -euo pipefail
 export PGPASSWORD="${POSTGRES_PASSWORD}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
+wait_for_postgres() {
+    echo "Waiting for PostgreSQL at ${POSTGRES_HOST}:${POSTGRES_PORT}..."
+    until pg_isready -h "${POSTGRES_HOST}" -p "${POSTGRES_PORT}" -U "${POSTGRES_USER}" -d "postgres" >/dev/null 2>&1; do
+        sleep 2
+    done
+    echo "PostgreSQL is ready."
+}
+
+wait_for_postgres
+
 run_admin() {
     local file="$1"
     echo "Applying (admin) $file"

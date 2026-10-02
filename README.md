@@ -290,7 +290,6 @@ The platform features a **hybrid dual-path ingestion engine** that balances real
     ├── grafana
     │   ├── alerting
     │   ├── dashboards
-    │   │   ├── SQL Server Monitoring Platform.json
     │   │   └── platform_overview.json
     │   ├── provisioning
     │   │   ├── dashboards

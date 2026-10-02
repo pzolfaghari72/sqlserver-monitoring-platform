@@ -1,6 +1,6 @@
 PYTHON ?= python3
 COMPOSE ?= docker compose
- 
+
 .PHONY: setup up down restart logs test lint validate rebuild reset deploy health backup cleanup-logs generate-secret generate-fernet-key
  
 setup:; bash scripts/bootstrap/setup.sh

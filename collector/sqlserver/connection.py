@@ -33,6 +33,10 @@ class SQLServerConnector:
         """
         self.settings = settings
 
+    def build_connection_string(self) -> str:
+        """Return the ODBC connection string used for SQL Server sessions."""
+        return self.settings.sqlserver_odbc_connection_string
+
     @contextmanager
     def get_connection(self) -> Generator[pyodbc.Connection, None, None]:
         """
@@ -65,7 +69,7 @@ class SQLServerConnector:
             # Establish the connection using the driver-safe formatted connection string.
             # autocommit=True prevents monitor DMV queries from spawning uncommitted implicit transactions.
             conn = pyodbc.connect(
-                self.settings.sqlserver_odbc_connection_string,
+                self.build_connection_string(),
                 timeout=self.settings.SQLSERVER_CONNECTION_TIMEOUT,
                 autocommit=True,
             )

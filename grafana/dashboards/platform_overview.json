@@ -79,9 +79,9 @@
       },
       "gridPos": {
         "h": 12,
-        "w": 10,
+        "w": 24,
         "x": 0,
-        "y": 0
+        "y": 22
       },
       "id": 5,
       "options": {
@@ -108,6 +108,7 @@
         }
       ],
       "title": "Server Metric Trend",
+      "description": "Choose one server metric at a time. Values are averaged into time buckets; compare like-for-like series because metrics can use different units.",
       "type": "timeseries"
     },
     {
@@ -144,14 +145,14 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
-        "x": 10,
-        "y": 0
+        "w": 6,
+        "x": 0,
+        "y": 10
       },
       "id": 1,
       "options": {
         "colorMode": "background",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
         "percentChangeColorMode": "standard",
@@ -170,11 +171,12 @@
       "targets": [
         {
           "format": "table",
-          "rawSql": "SELECT COUNT(*) AS value FROM monitoring.system_health WHERE status = 'healthy'",
+          "rawSql": "SELECT COUNT(*) AS value FROM monitoring.system_health WHERE status IN ('degraded','unhealthy')",
           "refId": "A"
         }
       ],
-      "title": "Healthy Components",
+      "title": "Platform Health Issues",
+      "description": "Count of degraded and unhealthy components across the platform. This system-wide signal is not narrowed by the SQL Server instance selector.",
       "type": "stat"
     },
     {
@@ -197,11 +199,11 @@
               },
               {
                 "color": "yellow",
-                "value": 2
+                "value": 1
               },
               {
                 "color": "red",
-                "value": 5
+                "value": 3
               }
             ]
           },
@@ -211,14 +213,14 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 3,
-        "x": 14,
-        "y": 0
+        "w": 6,
+        "x": 6,
+        "y": 10
       },
       "id": 2,
       "options": {
         "colorMode": "background",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
         "percentChangeColorMode": "standard",
@@ -278,14 +280,14 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
-        "x": 17,
-        "y": 0
+        "w": 6,
+        "x": 12,
+        "y": 10
       },
       "id": 3,
       "options": {
         "colorMode": "background",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
         "percentChangeColorMode": "standard",
@@ -345,14 +347,14 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 3,
-        "x": 21,
-        "y": 0
+        "w": 6,
+        "x": 18,
+        "y": 10
       },
       "id": 4,
       "options": {
         "colorMode": "background",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
         "percentChangeColorMode": "standard",
@@ -411,9 +413,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 14,
-        "x": 10,
-        "y": 4
+        "w": 24,
+        "x": 0,
+        "y": 14
       },
       "id": 7,
       "options": {
@@ -427,22 +429,18 @@
           "show": false
         },
         "showHeader": true,
-        "sortBy": [
-          {
-            "desc": true,
-            "displayName": "alerted_at"
-          }
-        ]
+        "sortBy": []
       },
       "pluginVersion": "11.2.0",
       "targets": [
         {
           "format": "table",
-          "rawSql": "SELECT a.first_seen_at AS alerted_at, i.instance_name, a.alert_name AS metric_name, a.severity, a.status, a.message FROM monitoring.alert_event AS a JOIN dimension.dim_instance AS i ON i.instance_key = a.instance_key WHERE a.status IN ('open','acknowledged') AND (0 IN (${instance_key:csv}) OR a.instance_key IN (${instance_key:csv})) ORDER BY a.first_seen_at DESC LIMIT 20;",
-          "refId": "A"
+          "rawSql": "SELECT a.first_seen_at AS alerted_at, i.instance_name, a.alert_name AS metric_name, a.severity, a.status, a.message FROM monitoring.alert_event AS a JOIN dimension.dim_instance AS i ON i.instance_key = a.instance_key WHERE a.status IN ('open','acknowledged') AND (0 IN (${instance_key:csv}) OR a.instance_key IN (${instance_key:csv})) ORDER BY CASE a.severity WHEN 'critical' THEN 1 WHEN 'warning' THEN 2 ELSE 3 END, a.first_seen_at DESC LIMIT 20;",
+        "y": 22
         }
       ],
       "title": "Active Alerts",
+      "description": "Open and acknowledged events are grouped by severity, with critical conditions first. Use the message and instance columns to start triage.",
       "type": "table"
     },
     {
@@ -506,7 +504,7 @@
         "h": 13,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 34
       },
       "id": 6,
       "options": {
@@ -532,7 +530,8 @@
           "refId": "A"
         }
       ],
-      "title": "Wait Statistics (stored ms)",
+      "title": "Wait Statistics · Stored Milliseconds",
+      "description": "Wait values are displayed as stored. Confirm whether the collector stores cumulative snapshots or interval deltas before interpreting these as rates.",
       "type": "timeseries"
     },
     {
@@ -571,12 +570,12 @@
         "h": 6,
         "w": 6,
         "x": 0,
-        "y": 25
+        "y": 47
       },
       "id": 9,
       "options": {
         "colorMode": "background",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
         "percentChangeColorMode": "standard",
@@ -599,7 +598,8 @@
           "refId": "A"
         }
       ],
-      "title": "CPU Utilization (avg)",
+      "title": "CPU Utilization · Range Average",
+      "description": "Average successful CPU samples over the selected time range and instances. Thresholds are visual guidance, not replacements for configured alert rules.",
       "type": "stat"
     },
     {
@@ -638,12 +638,12 @@
         "h": 6,
         "w": 6,
         "x": 6,
-        "y": 25
+        "y": 47
       },
       "id": 10,
       "options": {
         "colorMode": "background",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
         "percentChangeColorMode": "standard",
@@ -666,7 +666,8 @@
           "refId": "A"
         }
       ],
-      "title": "Memory Utilization (avg)",
+      "title": "Memory Utilization · Range Average",
+      "description": "Average successful memory samples over the selected time range and instances. Thresholds are visual guidance, not replacements for configured alert rules.",
       "type": "stat"
     },
     {
@@ -705,12 +706,12 @@
         "h": 6,
         "w": 6,
         "x": 12,
-        "y": 25
+        "y": 47
       },
       "id": 11,
       "options": {
         "colorMode": "background",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
         "percentChangeColorMode": "standard",
@@ -733,7 +734,8 @@
           "refId": "A"
         }
       ],
-      "title": "Backup Age",
+      "title": "Oldest Full Backup Age",
+      "description": "Age of the oldest latest successful full backup found among selected databases. Databases with no successful backup record are not included; keep the 24-hour and 48-hour bands aligned with configured alerts.",
       "type": "stat"
     },
     {
@@ -772,12 +774,12 @@
         "h": 6,
         "w": 6,
         "x": 18,
-        "y": 25
+        "y": 47
       },
       "id": 12,
       "options": {
         "colorMode": "background",
-        "graphMode": "area",
+        "graphMode": "none",
         "justifyMode": "center",
         "orientation": "auto",
         "percentChangeColorMode": "standard",
@@ -800,7 +802,7 @@
           "refId": "A"
         }
       ],
-      "title": "Agent Failures (24h)",
+      "title": "SQL Agent Failures · 24h",
       "type": "stat"
     },
     {
@@ -838,7 +840,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 31
+        "y": 53
       },
       "id": 13,
       "options": {
@@ -905,7 +907,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 31
+        "y": 53
       },
       "id": 8,
       "options": {
@@ -998,7 +1000,7 @@
         "h": 11,
         "w": 12,
         "x": 0,
-        "y": 39
+        "y": 61
       },
       "id": 15,
       "options": {
@@ -1024,7 +1026,8 @@
           "refId": "A"
         }
       ],
-      "title": "Database Storage Trend (MB)",
+      "title": "Database and Log Size Trend (MB)",
+      "description": "Trend of successful size and log-usage measurements. Select databases to isolate growth and investigate sustained increases.",
       "type": "timeseries"
     },
     {
@@ -1088,7 +1091,7 @@
         "h": 11,
         "w": 12,
         "x": 12,
-        "y": 39
+        "y": 61
       },
       "id": 14,
       "options": {
@@ -1114,11 +1117,126 @@
           "refId": "A"
         }
       ],
-      "title": "Job Outcome Trend",
+      "title": "SQL Agent Job Outcomes",
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "monitoring-postgres"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "health_state"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "healthy": {
+                        "color": "green",
+                        "index": 0,
+                        "text": "HEALTHY"
+                      },
+                      "stale": {
+                        "color": "orange",
+                        "index": 1,
+                        "text": "STALE"
+                      },
+                      "failed": {
+                        "color": "red",
+                        "index": 2,
+                        "text": "FAILED"
+                      },
+                      "partial": {
+                        "color": "orange",
+                        "index": 3,
+                        "text": "PARTIAL"
+                      },
+                      "disabled": {
+                        "color": "gray",
+                        "index": 4,
+                        "text": "DISABLED"
+                      },
+                      "no_data": {
+                        "color": "red",
+                        "index": 5,
+                        "text": "NO DATA"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 16,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "format": "table",
+          "rawSql": "WITH latest_run AS (SELECT DISTINCT ON (cr.instance_key) cr.instance_key, cr.collection_run_key, cr.started_at, cr.finished_at, cr.status, cr.duration_seconds, cr.error_count, cr.records_collected FROM monitoring.collection_run AS cr ORDER BY cr.instance_key, cr.started_at DESC, cr.collection_run_key DESC), latest_sample AS (SELECT x.instance_key, MAX(x.collected_at) AS last_sample_at FROM (SELECT f.instance_key, f.collected_at FROM fact.fact_server_metric AS f WHERE f.status = 'success' UNION ALL SELECT d.instance_key, f.collected_at FROM fact.fact_database_metric AS f JOIN dimension.dim_database AS d ON d.database_key = f.database_key WHERE f.status = 'success') AS x GROUP BY x.instance_key) SELECT s.server_name, i.instance_name, i.environment, COALESCE(t.enabled, FALSE) AS target_enabled, lr.status AS last_run_status, lr.started_at AS last_run_started_at, ls.last_sample_at, EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - ls.last_sample_at))::bigint AS sample_age_seconds, CASE WHEN NOT i.is_active OR NOT s.is_active OR t.enabled IS DISTINCT FROM TRUE THEN 'disabled' WHEN ls.last_sample_at IS NULL THEN 'no_data' WHEN CURRENT_TIMESTAMP - ls.last_sample_at > make_interval(secs => (COALESCE(t.collection_interval_seconds, 60) * 3)::double precision) THEN 'stale' WHEN lr.status IN ('failed', 'partial') THEN lr.status ELSE 'healthy' END AS health_state FROM dimension.dim_instance AS i JOIN dimension.dim_server AS s ON s.server_key = i.server_key LEFT JOIN config.monitoring_target AS t ON t.instance_key = i.instance_key LEFT JOIN latest_run AS lr ON lr.instance_key = i.instance_key LEFT JOIN latest_sample AS ls ON ls.instance_key = i.instance_key WHERE (0 IN (${instance_key:csv}) OR i.instance_key IN (${instance_key:csv})) ORDER BY CASE WHEN NOT i.is_active OR NOT s.is_active OR t.enabled IS DISTINCT FROM TRUE THEN 6 WHEN ls.last_sample_at IS NULL THEN 1 WHEN CURRENT_TIMESTAMP - ls.last_sample_at > make_interval(secs => (COALESCE(t.collection_interval_seconds, 60) * 3)::double precision) THEN 2 WHEN lr.status = 'failed' THEN 3 WHEN lr.status = 'partial' THEN 4 ELSE 5 END, s.server_name, i.instance_name;",
+          "refId": "A"
+        }
+      ],
+      "title": "SQL Server Instance Availability & Collection Health",
+      "description": "A sample is stale after three configured collection intervals. Disabled targets are separated from missing data; failed and partial states reflect the latest run.",
+      "type": "table"
     }
   ],
-  "refresh": "5s",
+  "refresh": "1m",
   "schemaVersion": 39,
   "tags": [
     "sqlserver",
@@ -1214,13 +1332,13 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "SQL Server Monitoring Platform",
+  "title": "SQL Server Operations | Overview",
   "uid": "sqlserver-platform",
-  "version": 13,
+  "version": 15,
   "weekStart": ""
 }

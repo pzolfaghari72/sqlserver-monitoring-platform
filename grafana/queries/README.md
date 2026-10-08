@@ -31,7 +31,7 @@ Set the data source to the PostgreSQL database containing the `dimension`, `conf
 - `20_component_health.sql`: collector and service heartbeat status.
 - `21_staging_queue.sql`: rows remaining in staging by collection run.
 
-See [the schema review](../../postgres_schema_review.md) for database design findings.
+See the [database model](../../docs/database/data-model.md) for database design details.
 
 ## Interpretation notes
 
@@ -40,4 +40,4 @@ See [the schema review](../../postgres_schema_review.md) for database design fin
 - `dimension.dim_metric` has warning/critical values but no comparison direction. The queries use active records in `monitoring.alert_event` for alert state instead of guessing whether a metric is high-is-bad or low-is-bad.
 - `13_top_queries_by_delta.sql` assumes the query-stat total counters are cumulative snapshots, and ignores counter resets and rows without both query hashes. Confirm the collector behavior before relying on this panel.
 - `14_backup_freshness.sql` uses the supplied default 24/48-hour backup-age bands; keep them aligned with configured alert rules.
-- The snapshot did not contain the existing `grafana/queries` folder or dashboard provisioning files. This library is a ready-to-copy set; it is not yet wired into provisioned dashboards.
+- This SQL catalog is maintained separately from the provisioned dashboard JSON. Use these queries when adding panels; the overview dashboard currently contains its panel queries inline.

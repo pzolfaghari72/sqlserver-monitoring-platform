@@ -7,6 +7,8 @@ Production-oriented local stack for monitoring Microsoft SQL Server with Postgre
 # SQL Server Monitoring Dashboard
 <img width="1918" height="1079" alt="GrafanaDashboard" src="https://github.com/user-attachments/assets/269a2896-0778-444f-9c0f-d7ad1efb112f" />
 
+![alt text](image.png)
+
 ============================================================
 ## Quick Start
 ============================================================
@@ -181,17 +183,6 @@ The platform features a **hybrid dual-path ingestion engine** that balances real
     │       ├── server_metrics.py
     │       ├── sql_agent.py
     │       └── wait_stats.py
-    ├── config
-    │   ├── alerts
-    │   ├── alerts.yml
-    │   ├── environments
-    │   │   ├── development.yml
-    │   │   ├── production.yml
-    │   │   └── test.yml
-    │   ├── metrics
-    │   ├── metrics.yml
-    │   ├── servers
-    │   └── servers.yml
     ├── db
     │   ├── config
     │   │   ├── config_alert_rule.sql
@@ -312,15 +303,8 @@ The platform features a **hybrid dual-path ingestion engine** that balances real
     │   │   └── Dockerfile
     │   ├── collector
     │   │   └── Dockerfile
-    │   ├── frontend
+    │   └── frontend
     │   │   └── Dockerfile
-    │   ├── grafana
-    │   │   ├── Dockerfile
-    │   │   └── grafana.ini
-    │   └── postgres
-    │       ├── Dockerfile
-    │       ├── pg_hba.conf
-    │       └── postgresql.conf
     ├── requirements.txt
     ├── scripts
     │   ├── bootstrap
@@ -328,10 +312,7 @@ The platform features a **hybrid dual-path ingestion engine** that balances real
     │   │   ├── init_database.sh
     │   │   └── setup.sh
     │   ├── deployment
-    │   │   ├── deploy.sh
-    │   │   ├── restart.sh
-    │   │   ├── start.sh
-    │   │   └── stop.sh
+    │   │   └── deploy.sh
     │   ├── maintenance
     │   │   ├── backup_postgres.sh
     │   │   ├── cleanup_logs.sh
@@ -345,7 +326,6 @@ The platform features a **hybrid dual-path ingestion engine** that balances real
         ├── e2e
         │   ├── __init__.py
         │   └── test_monitoring_pipeline.py
-        ├── fixtures
         ├── integration
         │   ├── __init__.py
         │   ├── airflow

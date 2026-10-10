@@ -137,7 +137,8 @@
     },
     {
       "datasource": {
-        "type": "postgres",
+        "default": true,
+        "type": "grafana-postgresql-datasource",
         "uid": "monitoring-postgres"
       },
       "description": "Count of degraded and unhealthy components across the platform. This system-wide signal is not narrowed by the SQL Server instance selector.",
@@ -195,9 +196,32 @@
       "pluginVersion": "11.2.0",
       "targets": [
         {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "monitoring-postgres"
+          },
+          "editorMode": "code",
           "format": "table",
-          "rawSql": "SELECT COUNT(*) AS value FROM monitoring.system_health WHERE status IN ('degraded','unhealthy')",
-          "refId": "A"
+          "rawQuery": true,
+          "rawSql": "SELECT COUNT(*) AS \"Issues\" FROM monitoring.system_health WHERE status IN ('degraded','unhealthy')",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Platform Health Issues",
@@ -205,7 +229,8 @@
     },
     {
       "datasource": {
-        "type": "postgres",
+        "default": true,
+        "type": "grafana-postgresql-datasource",
         "uid": "monitoring-postgres"
       },
       "fieldConfig": {
@@ -262,9 +287,32 @@
       "pluginVersion": "11.2.0",
       "targets": [
         {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "monitoring-postgres"
+          },
+          "editorMode": "code",
           "format": "table",
-          "rawSql": "SELECT COUNT(*) AS value FROM monitoring.alert_event WHERE status IN ('open','acknowledged') AND (0 IN (${instance_key:csv}) OR instance_key IN (${instance_key:csv}))",
-          "refId": "A"
+          "rawQuery": true,
+          "rawSql": "SELECT COUNT(*) AS \"Alerts\" FROM monitoring.alert_event WHERE status IN ('open','acknowledged') AND (0 IN (${instance_key:csv}) OR instance_key IN (${instance_key:csv}))",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Open Alerts",
@@ -272,7 +320,8 @@
     },
     {
       "datasource": {
-        "type": "postgres",
+        "default": true,
+        "type": "grafana-postgresql-datasource",
         "uid": "monitoring-postgres"
       },
       "fieldConfig": {
@@ -329,9 +378,32 @@
       "pluginVersion": "11.2.0",
       "targets": [
         {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "monitoring-postgres"
+          },
+          "editorMode": "code",
           "format": "table",
-          "rawSql": "SELECT COUNT(*) AS value FROM monitoring.collection_run WHERE started_at > NOW() - INTERVAL '24 hours' AND (0 IN (${instance_key:csv}) OR instance_key IN (${instance_key:csv}))",
-          "refId": "A"
+          "rawQuery": true,
+          "rawSql": "SELECT COUNT(*) AS \"Runs\" FROM monitoring.collection_run WHERE started_at > NOW() - INTERVAL '24 hours' AND (0 IN (${instance_key:csv}) OR instance_key IN (${instance_key:csv}))",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Collection Runs (24h)",
@@ -339,7 +411,8 @@
     },
     {
       "datasource": {
-        "type": "postgres",
+        "default": true,
+        "type": "grafana-postgresql-datasource",
         "uid": "monitoring-postgres"
       },
       "fieldConfig": {
@@ -396,9 +469,32 @@
       "pluginVersion": "11.2.0",
       "targets": [
         {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "monitoring-postgres"
+          },
+          "editorMode": "code",
           "format": "table",
-          "rawSql": "SELECT COUNT(*) AS value FROM monitoring.collection_error WHERE occurred_at > NOW() - INTERVAL '24 hours' AND (0 IN (${instance_key:csv}) OR instance_key IN (${instance_key:csv}))",
-          "refId": "A"
+          "rawQuery": true,
+          "rawSql": "SELECT COUNT(*) AS \"Errors\" FROM monitoring.collection_error WHERE occurred_at > NOW() - INTERVAL '24 hours' AND (0 IN (${instance_key:csv}) OR instance_key IN (${instance_key:csv}))",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Errors (24h)",
@@ -652,7 +748,8 @@
     },
     {
       "datasource": {
-        "type": "postgres",
+        "default": true,
+        "type": "grafana-postgresql-datasource",
         "uid": "monitoring-postgres"
       },
       "description": "Average successful CPU samples over the selected time range and instances. Thresholds are visual guidance, not replacements for configured alert rules.",
@@ -704,15 +801,41 @@
           "values": false
         },
         "showPercentChange": false,
+        "text": {
+          "valueSize": 40
+        },
         "textMode": "value_and_name",
         "wideLayout": true
       },
       "pluginVersion": "11.2.0",
       "targets": [
         {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "monitoring-postgres"
+          },
+          "editorMode": "code",
           "format": "table",
-          "rawSql": "SELECT AVG(f.metric_value_numeric)::double precision AS value FROM fact.fact_server_metric AS f JOIN dimension.dim_metric AS m ON m.metric_key = f.metric_key WHERE m.metric_code = 'CPU_UTILIZATION' AND f.status = 'success' AND $__timeFilter(f.collected_at) AND (0 IN (${instance_key:csv}) OR f.instance_key IN (${instance_key:csv}))",
-          "refId": "A"
+          "rawQuery": true,
+          "rawSql": "SELECT AVG(f.metric_value_numeric)::double precision AS \"CPU \" FROM fact.fact_server_metric AS f JOIN dimension.dim_metric AS m ON m.metric_key = f.metric_key WHERE m.metric_code = 'CPU_UTILIZATION' AND f.status = 'success' AND $__timeFilter(f.collected_at) AND (0 IN (${instance_key:csv}) OR f.instance_key IN (${instance_key:csv}))",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "CPU Utilization · Range Average",
@@ -720,7 +843,8 @@
     },
     {
       "datasource": {
-        "type": "postgres",
+        "default": true,
+        "type": "grafana-postgresql-datasource",
         "uid": "monitoring-postgres"
       },
       "description": "Average successful memory samples over the selected time range and instances. Thresholds are visual guidance, not replacements for configured alert rules.",
@@ -772,15 +896,41 @@
           "values": false
         },
         "showPercentChange": false,
+        "text": {
+          "valueSize": 40
+        },
         "textMode": "value_and_name",
         "wideLayout": true
       },
       "pluginVersion": "11.2.0",
       "targets": [
         {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "monitoring-postgres"
+          },
+          "editorMode": "code",
           "format": "table",
-          "rawSql": "SELECT AVG(f.metric_value_numeric)::double precision AS value FROM fact.fact_server_metric AS f JOIN dimension.dim_metric AS m ON m.metric_key = f.metric_key WHERE m.metric_code = 'MEMORY_UTILIZATION' AND f.status = 'success' AND $__timeFilter(f.collected_at) AND (0 IN (${instance_key:csv}) OR f.instance_key IN (${instance_key:csv}))",
-          "refId": "A"
+          "rawQuery": true,
+          "rawSql": "SELECT AVG(f.metric_value_numeric)::double precision AS \"Memory\" FROM fact.fact_server_metric AS f JOIN dimension.dim_metric AS m ON m.metric_key = f.metric_key WHERE m.metric_code = 'MEMORY_UTILIZATION' AND f.status = 'success' AND $__timeFilter(f.collected_at) AND (0 IN (${instance_key:csv}) OR f.instance_key IN (${instance_key:csv}))",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Memory Utilization · Range Average",
@@ -788,7 +938,8 @@
     },
     {
       "datasource": {
-        "type": "postgres",
+        "default": true,
+        "type": "grafana-postgresql-datasource",
         "uid": "monitoring-postgres"
       },
       "description": "Age of the oldest latest successful full backup found among selected databases. Databases with no successful backup record are not included; keep the 24-hour and 48-hour bands aligned with configured alerts.",
@@ -840,15 +991,41 @@
           "values": false
         },
         "showPercentChange": false,
+        "text": {
+          "valueSize": 40
+        },
         "textMode": "value_and_name",
         "wideLayout": true
       },
       "pluginVersion": "11.2.0",
       "targets": [
         {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "monitoring-postgres"
+          },
+          "editorMode": "code",
           "format": "table",
-          "rawSql": "SELECT EXTRACT(EPOCH FROM (NOW() - MIN(latest.last_success_at))) / 3600.0 AS value FROM (SELECT fb.database_key, MAX(fb.backup_finish_at) AS last_success_at FROM fact.fact_backup AS fb WHERE fb.backup_type = 'FULL' AND fb.backup_status = 'SUCCESS' AND fb.backup_finish_at IS NOT NULL AND (0 IN (${instance_key:csv}) OR fb.instance_key IN (${instance_key:csv})) AND (0 IN (${database_key:csv}) OR fb.database_key IN (${database_key:csv})) GROUP BY fb.database_key) AS latest",
-          "refId": "A"
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  FLOOR(\r\n    EXTRACT(EPOCH FROM (NOW() - MIN(latest.last_success_at))) / 3600.0\r\n  )::bigint AS \"Oldest\"\r\nFROM (\r\n  SELECT\r\n    fb.instance_key,\r\n    fb.database_key,\r\n    MAX(fb.backup_finish_at) AS last_success_at\r\n  FROM fact.fact_backup AS fb\r\n  WHERE fb.backup_type = 'FULL'\r\n    AND fb.backup_status = 'SUCCESS'\r\n    AND fb.backup_finish_at IS NOT NULL\r\n    AND (0 IN (${instance_key:csv})\r\n         OR fb.instance_key IN (${instance_key:csv}))\r\n    AND (0 IN (${database_key:csv})\r\n         OR fb.database_key IN (${database_key:csv}))\r\n  GROUP BY fb.instance_key, fb.database_key\r\n) AS latest;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "Oldest Full Backup Age",
@@ -856,7 +1033,8 @@
     },
     {
       "datasource": {
-        "type": "postgres",
+        "default": true,
+        "type": "grafana-postgresql-datasource",
         "uid": "monitoring-postgres"
       },
       "fieldConfig": {
@@ -907,15 +1085,41 @@
           "values": false
         },
         "showPercentChange": false,
+        "text": {
+          "valueSize": 40
+        },
         "textMode": "value_and_name",
         "wideLayout": true
       },
       "pluginVersion": "11.2.0",
       "targets": [
         {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "monitoring-postgres"
+          },
+          "editorMode": "code",
           "format": "table",
-          "rawSql": "SELECT COUNT(*) AS value FROM fact.fact_sqlagent_job AS j WHERE COALESCE(j.run_start_at, j.collected_at) > NOW() - INTERVAL '24 hours' AND j.run_status = 'FAILED' AND j.step_id = 0 AND (0 IN (${instance_key:csv}) OR j.instance_key IN (${instance_key:csv}))",
-          "refId": "A"
+          "rawQuery": true,
+          "rawSql": "SELECT COUNT(*) AS \"Failures\" FROM fact.fact_sqlagent_job AS j WHERE COALESCE(j.run_start_at, j.collected_at) > NOW() - INTERVAL '24 hours' AND j.run_status = 'FAILED' AND j.step_id = 0 AND (0 IN (${instance_key:csv}) OR j.instance_key IN (${instance_key:csv}))",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
         }
       ],
       "title": "SQL Agent Failures · 24h",
@@ -977,7 +1181,32 @@
           },
           "unit": "decmbytes"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "KASRADWH / Log Space Used"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 16,
@@ -1224,8 +1453,8 @@
               {
                 "id": "color",
                 "value": {
-                  "mode": "fixed",
-                  "fixedColor": "#E02F44"
+                  "fixedColor": "#E02F44",
+                  "mode": "fixed"
                 }
               },
               {
@@ -1243,8 +1472,8 @@
               {
                 "id": "color",
                 "value": {
-                  "mode": "fixed",
-                  "fixedColor": "#299C46"
+                  "fixedColor": "#299C46",
+                  "mode": "fixed"
                 }
               },
               {
@@ -1392,6 +1621,6 @@
   "timezone": "browser",
   "title": "SQL Server Operations | Overview",
   "uid": "sqlserver-platform",
-  "version": 1,
+  "version": 4,
   "weekStart": ""
 }

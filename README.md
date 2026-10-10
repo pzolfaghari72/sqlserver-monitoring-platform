@@ -49,9 +49,14 @@ Dockerfiles and component-specific Python dependencies are under [infrastructure
 
 ## Screenshots
 
-![SQL Server Monitoring operations portal](https://github.com/user-attachments/assets/f8e9bbb2-3289-42bf-96a3-fca6796ed5d0)
+![SQL Server Monitoring operations portal](https://github.com/user-attachments/assets/25a136d1-6382-4e8b-bf96-3633c70cca2d)
 
-![Grafana SQL Server monitoring dashboard](https://github.com/user-attachments/assets/2aff80b2-30f2-4c49-9eaa-943743575766)
+![Grafana SQL Server monitoring dashboard](https://github.com/user-attachments/assets/56916407-b90a-4c64-936c-18e56cbfb491)
+
+![Grafana SQL Server monitoring dashboard](https://github.com/user-attachments/assets/b367be1d-eb5b-4be5-8136-61fee67221e4)
+
+![Airflow SQL Server monitoring dashboard](https://github.com/user-attachments/assets/ea7a5c82-8f3f-4156-b52a-c2a8fe716a22)
+
 
 ## Prerequisites
 

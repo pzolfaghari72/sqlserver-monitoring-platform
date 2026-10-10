@@ -4,6 +4,9 @@ A containerized monitoring stack for collecting Microsoft SQL Server telemetry, 
 
 > **Deployment scope:** The supplied Docker Compose stack is intended for local development, evaluation, and small controlled deployments. It is not a substitute for production hardening, high availability, capacity planning, secret management, or a reviewed least-privilege access model.
 
+Browse the [documentation index](docs/README.md) for architecture, database,
+component, security, deployment, and operations guides.
+
 ## What it does
 
 - Collects server and database metrics, backup history, blocking snapshots, deadlocks, query statistics, wait statistics, and SQL Server Agent job outcomes.
@@ -30,7 +33,7 @@ flowchart LR
   API --> WEB[Operations portal]
 ```
 
-Airflow's `sqlserver_collection` DAG polls each minute and selects due targets from `config.collection_schedule`. The health probe and alert-processing DAGs run every two minutes; the data-quality DAG runs daily at 02:00 UTC. Generic server/database measurements flow through staging and PostgreSQL load procedures. Waits, blocking, query statistics, backups, deadlocks, and SQL Agent records use specialized persistence because their data grains differ.
+Airflow's `sqlserver_collection` DAG polls each minute and selects due targets from enabled `config.collection_schedule` rows; a target needs a schedule row to continue collecting after its initial run. The health probe and alert-processing DAGs run every two minutes; the data-quality DAG runs daily at 02:00 UTC. Generic server/database measurements flow through staging and PostgreSQL load procedures. Waits, blocking, query statistics, backups, deadlocks, and SQL Agent records use specialized persistence because their data grains differ.
 
 ## Tools and technologies
 
@@ -172,7 +175,7 @@ The webserver and scheduler load DAGs from [airflow/dags](airflow/dags/). They c
 | `alert_processing` | Every 2 minutes | Process completed collection runs and invoke alert evaluation. |
 | `data_quality` | Daily at 02:00 UTC | Purge old staging rows and check integrity/future timestamps. |
 
-Inspect DAG runs, task logs, and failures in the Airflow UI. Collection frequency is governed by `config.collection_schedule` and `config.monitoring_target`, not by repeatedly launching a separate collector service. See [DAG design](docs/airflow/dag-design.md) and [orchestration](docs/airflow/orchestration.md).
+Inspect DAG runs, task logs, and failures in the Airflow UI. Collection cadence comes from enabled `config.collection_schedule` rows; `config.monitoring_target` controls target enablement, timeouts, and priority. Do not run a separate collector loop alongside the Airflow scheduler for the same target. See [DAG design](docs/airflow/dag-design.md) and [orchestration](docs/airflow/orchestration.md).
 
 ## Grafana dashboard and query library
 
